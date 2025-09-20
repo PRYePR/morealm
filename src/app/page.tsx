@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -7,8 +8,17 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">MoreRealm VR</h1>
-          <p className="text-gray-600">Professional VR Lens Solutions</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">MoreRealm VR</h1>
+              <p className="text-gray-600">Professional VR Lens Solutions</p>
+            </div>
+            <nav className="flex space-x-4">
+              <Link href="/" className="text-blue-600 font-medium">Home</Link>
+              <Link href="/products" className="text-gray-600 hover:text-gray-900">Products</Link>
+              <Link href="/admin" className="text-gray-600 hover:text-gray-900">Admin</Link>
+            </nav>
+          </div>
         </div>
       </header>
 
@@ -21,11 +31,11 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-8">
             Custom prescription lenses for your VR headset
           </p>
-          <Button size="lg" className="mr-4">
-            Shop Now
+          <Button size="lg" className="mr-4" asChild>
+            <Link href="/products">Shop Now</Link>
           </Button>
-          <Button variant="outline" size="lg">
-            Learn More
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/products">Learn More</Link>
           </Button>
         </div>
 
