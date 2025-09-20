@@ -1,5 +1,5 @@
 // Simple client-side i18n solution
-export type Locale = 'en' | 'de' | 'fr' | 'es';
+export type Locale = 'en' | 'de' | 'de-at' | 'fr' | 'es';
 
 export const translations = {
   en: {
@@ -165,12 +165,54 @@ export const translations = {
     noProductsDesc: "Actualmente no hay lentes VR disponibles. Vuelva más tarde o contáctenos.",
     copyright: "© 2024 MoreRealm VR. Todos los derechos reservados.",
     phase: "Fase 2: Sistema de productos - Multiidioma"
+  },
+  "de-at": {
+    brand: "MoreRealm VR",
+    tagline: "Professionelle VR-Brillen-Lösungen",
+    home: "Startseite",
+    products: "Produkte",
+    admin: "Admin",
+    language: "Sprache",
+    welcome: "Willkommen bei VR Brillen E-Commerce",
+    subtitle: "Maßgeschneiderte Korrekturlinsen für Ihr VR-Headset",
+    shopNow: "Jetzt einkaufen",
+    learnMore: "Mehr erfahren",
+    configure: "Konfigurieren",
+    details: "Details",
+    customPrescription: "Individuelle Korrektur",
+    prescriptionDesc: "Angepasst an Ihre exakten Sehbedürfnisse",
+    premiumQuality: "Premium-Qualität",
+    qualityDesc: "Hochwertige optische Materialien",
+    fastDelivery: "Schnelle Lieferung",
+    deliveryDesc: "Schneller Versand in ganz Europa",
+    systemStatus: "Systemstatus",
+    productManagement: "Produktverwaltung",
+    addNewProduct: "Neues Produkt hinzufügen",
+    totalProducts: "Gesamte Produkte",
+    activeProducts: "Aktive Produkte",
+    inactiveProducts: "Inaktive Produkte",
+    name: "Name",
+    price: "Preis",
+    status: "Status",
+    created: "Erstellt",
+    actions: "Aktionen",
+    view: "Anzeigen",
+    edit: "Bearbeiten",
+    active: "Aktiv",
+    inactive: "Inaktiv",
+    vrPrescriptionLenses: "VR-Korrekturlinsen",
+    customLensesForVR: "Maßgeschneiderte Linsen für alle wichtigen VR-Headsets",
+    noProducts: "Noch keine Produkte",
+    noProductsDesc: "Derzeit sind keine VR-Linsen verfügbar. Schauen Sie später vorbei oder kontaktieren Sie uns.",
+    copyright: "© 2024 MoreRealm VR. Alle Rechte vorbehalten.",
+    phase: "Phase 2: Produktsystem - Mehrsprachig"
   }
 };
 
 export const languages = [
   { code: 'en' as Locale, name: 'English', flag: '🇬🇧' },
-  { code: 'de' as Locale, name: 'Deutsch', flag: '🇦🇹' },
+  { code: 'de' as Locale, name: 'Deutsch (DE)', flag: '🇩🇪' },
+  { code: 'de-at' as Locale, name: 'Deutsch (AT)', flag: '🇦🇹' },
   { code: 'fr' as Locale, name: 'Français', flag: '🇫🇷' },
   { code: 'es' as Locale, name: 'Español', flag: '🇪🇸' },
 ];

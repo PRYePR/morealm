@@ -17,13 +17,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Load saved language from localStorage
     const savedLocale = localStorage.getItem('locale') as Locale;
-    if (savedLocale && ['en', 'de', 'fr', 'es'].includes(savedLocale)) {
+    if (savedLocale && ['en', 'de', 'de-at', 'fr', 'es'].includes(savedLocale)) {
       setLocaleState(savedLocale);
     } else {
-      // Detect browser language
-      const browserLang = navigator.language.split('-')[0] as Locale;
-      if (['en', 'de', 'fr', 'es'].includes(browserLang)) {
-        setLocaleState(browserLang);
+      // Detect browser language with country
+      const fullLang = navigator.language.toLowerCase();
+      const browserLang = fullLang.split('-')[0];
+
+      // Specific country detection
+      if (fullLang === 'de-at' || fullLang.includes('austria')) {
+        setLocaleState('de-at');
+      } else if (fullLang === 'de-de' || browserLang === 'de') {
+        setLocaleState('de');
+      } else if (['en', 'fr', 'es'].includes(browserLang)) {
+        setLocaleState(browserLang as Locale);
       }
     }
   }, []);
