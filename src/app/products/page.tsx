@@ -1,43 +1,66 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { prisma } from "@/lib/prisma";
+import { Navigation } from "@/components/Navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default async function ProductsPage() {
-  const products = await prisma.product.findMany({
-    where: { active: true },
-    orderBy: { createdAt: 'desc' }
-  });
+interface Product {
+  id: string;
+  name: string;
+  description: string | null;
+  basePrice: number;
+  images: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export default function ProductsPage() {
+  const { t } = useLanguage();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <Navigation currentPage="products" />
+        <main className="max-w-7xl mx-auto px-4 py-12">
+          <div className="text-center">
+            <p className="text-xl">{t('loading') || 'Loading...'}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <Link href="/" className="text-3xl font-bold text-gray-900 hover:text-blue-600">
-                MoreRealm VR
-              </Link>
-              <p className="text-gray-600">Professional VR Lens Solutions</p>
-            </div>
-            <nav className="flex space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-              <Link href="/products" className="text-blue-600 font-medium">Products</Link>
-              <Link href="/admin" className="text-gray-600 hover:text-gray-900">Admin</Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Navigation currentPage="products" />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            VR Prescription Lenses
+            {t('vrPrescriptionLenses')}
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            Custom lenses for all major VR headsets
+            {t('customLensesForVR')}
           </p>
         </div>
 
@@ -59,12 +82,12 @@ export default async function ProductsPage() {
                   <div className="flex space-x-2">
                     <Button asChild className="flex-1">
                       <Link href={`/products/${product.id}`}>
-                        Configure
+                        {t('configure')}
                       </Link>
                     </Button>
                     <Button variant="outline" asChild>
                       <Link href={`/products/${product.id}`}>
-                        Details
+                        {t('details')}
                       </Link>
                     </Button>
                   </div>
@@ -75,12 +98,12 @@ export default async function ProductsPage() {
         ) : (
           <div className="text-center py-16">
             <div className="bg-white rounded-lg shadow-sm p-8 max-w-md mx-auto">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">No Products Yet</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">{t('noProducts')}</h3>
               <p className="text-gray-600 mb-6">
-                No VR lenses are currently available. Please check back later or contact us.
+                {t('noProductsDesc')}
               </p>
               <Button asChild>
-                <Link href="/admin">Add Product (Admin)</Link>
+                <Link href="/admin">{t('addNewProduct')} (Admin)</Link>
               </Button>
             </div>
           </div>
@@ -123,8 +146,8 @@ export default async function ProductsPage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>&copy; 2024 MoreRealm VR. All rights reserved.</p>
-          <p className="text-gray-400 mt-2">Phase 2: Product System - In Progress</p>
+          <p>{t('copyright')}</p>
+          <p className="text-gray-400 mt-2">{t('phase')}</p>
         </div>
       </footer>
     </div>

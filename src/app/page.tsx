@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Navigation } from "@/components/Navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 
@@ -11,25 +11,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{t('brand')}</h1>
-              <p className="text-gray-600">{t('tagline')}</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <nav className="flex space-x-4">
-                <Link href="/" className="text-blue-600 font-medium">{t('home')}</Link>
-                <Link href="/products" className="text-gray-600 hover:text-gray-900">{t('products')}</Link>
-                <Link href="/admin" className="text-gray-600 hover:text-gray-900">{t('admin')}</Link>
-              </nav>
-              <LanguageSwitcher />
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navigation currentPage="home" />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12">

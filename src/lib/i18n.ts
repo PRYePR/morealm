@@ -169,8 +169,8 @@ export const translations = {
 };
 
 export const languages = [
-  { code: 'en' as Locale, name: 'English', flag: '🇺🇸' },
-  { code: 'de' as Locale, name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'en' as Locale, name: 'English', flag: '🇬🇧' },
+  { code: 'de' as Locale, name: 'Deutsch', flag: '🇦🇹' },
   { code: 'fr' as Locale, name: 'Français', flag: '🇫🇷' },
   { code: 'es' as Locale, name: 'Español', flag: '🇪🇸' },
 ];

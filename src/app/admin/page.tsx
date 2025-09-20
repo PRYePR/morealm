@@ -1,12 +1,38 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { prisma } from "@/lib/prisma";
+import { Navigation } from "@/components/Navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default async function AdminPage() {
-  const products = await prisma.product.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
+interface Product {
+  id: string;
+  name: string;
+  description: string | null;
+  basePrice: number;
+  active: boolean;
+  createdAt: string;
+}
+
+export default function AdminPage() {
+  const { t } = useLanguage();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      });
+  }, []);
 
   const stats = {
     totalProducts: products.length,
@@ -14,33 +40,29 @@ export default async function AdminPage() {
     inactiveProducts: products.filter(p => !p.active).length,
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <Navigation currentPage="admin" />
+        <main className="max-w-7xl mx-auto px-4 py-12">
+          <div className="text-center">
+            <p className="text-xl">{t('loading') || 'Loading...'}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <Link href="/" className="text-3xl font-bold text-gray-900 hover:text-blue-600">
-                MoreRealm VR
-              </Link>
-              <p className="text-gray-600">Admin Panel - Product Management</p>
-            </div>
-            <nav className="flex space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-              <Link href="/products" className="text-gray-600 hover:text-gray-900">Products</Link>
-              <Link href="/admin" className="text-blue-600 font-medium">Admin</Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Navigation currentPage="admin" />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('productManagement')}</h1>
           <Button asChild>
-            <Link href="/admin/products/new">Add New Product</Link>
+            <Link href="/admin/products/new">{t('addNewProduct')}</Link>
           </Button>
         </div>
 
@@ -48,7 +70,7 @@ export default async function AdminPage() {
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader>
-              <CardTitle>Total Products</CardTitle>
+              <CardTitle>{t('totalProducts')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold text-blue-600">{stats.totalProducts}</p>
@@ -57,7 +79,7 @@ export default async function AdminPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Active Products</CardTitle>
+              <CardTitle>{t('activeProducts')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold text-green-600">{stats.activeProducts}</p>
@@ -66,7 +88,7 @@ export default async function AdminPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Inactive Products</CardTitle>
+              <CardTitle>{t('inactiveProducts')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold text-gray-600">{stats.inactiveProducts}</p>
@@ -86,11 +108,11 @@ export default async function AdminPage() {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-3 px-4 font-semibold">Name</th>
-                      <th className="text-left py-3 px-4 font-semibold">Price</th>
-                      <th className="text-left py-3 px-4 font-semibold">Status</th>
-                      <th className="text-left py-3 px-4 font-semibold">Created</th>
-                      <th className="text-left py-3 px-4 font-semibold">Actions</th>
+                      <th className="text-left py-3 px-4 font-semibold">{t('name')}</th>
+                      <th className="text-left py-3 px-4 font-semibold">{t('price')}</th>
+                      <th className="text-left py-3 px-4 font-semibold">{t('status')}</th>
+                      <th className="text-left py-3 px-4 font-semibold">{t('created')}</th>
+                      <th className="text-left py-3 px-4 font-semibold">{t('actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -115,19 +137,19 @@ export default async function AdminPage() {
                               ? 'bg-green-100 text-green-800'
                               : 'bg-gray-100 text-gray-800'
                           }`}>
-                            {product.active ? 'Active' : 'Inactive'}
+                            {product.active ? t('active') : t('inactive')}
                           </span>
                         </td>
                         <td className="py-3 px-4 text-sm text-gray-500">
-                          {product.createdAt.toLocaleDateString()}
+                          {new Date(product.createdAt).toLocaleDateString()}
                         </td>
                         <td className="py-3 px-4">
                           <div className="flex space-x-2">
                             <Button variant="outline" size="sm" asChild>
-                              <Link href={`/products/${product.id}`}>View</Link>
+                              <Link href={`/products/${product.id}`}>{t('view')}</Link>
                             </Button>
                             <Button variant="outline" size="sm" asChild>
-                              <Link href={`/admin/products/${product.id}/edit`}>Edit</Link>
+                              <Link href={`/admin/products/${product.id}/edit`}>{t('edit')}</Link>
                             </Button>
                           </div>
                         </td>
@@ -139,7 +161,7 @@ export default async function AdminPage() {
             ) : (
               <div className="text-center py-8">
                 <div className="text-6xl text-gray-300 mb-4">📦</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">No Products Yet</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('noProducts')}</h3>
                 <p className="text-gray-600 mb-4">
                   Start by adding your first VR lens product
                 </p>
@@ -159,7 +181,7 @@ export default async function AdminPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Button variant="outline" className="w-full justify-start" asChild>
-                <Link href="/admin/products/new">➕ Add New Product</Link>
+                <Link href="/admin/products/new">➕ {t('addNewProduct')}</Link>
               </Button>
               <Button variant="outline" className="w-full justify-start" asChild>
                 <Link href="/admin/orders">📋 View Orders</Link>
@@ -188,6 +210,10 @@ export default async function AdminPage() {
                   <span>Version:</span>
                   <span className="text-gray-600">Phase 2</span>
                 </div>
+                <div className="flex justify-between">
+                  <span>Languages:</span>
+                  <span className="text-purple-600">4 Supported</span>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -197,8 +223,8 @@ export default async function AdminPage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>&copy; 2024 MoreRealm VR. All rights reserved.</p>
-          <p className="text-gray-400 mt-2">Admin Panel - Product Management System</p>
+          <p>{t('copyright')}</p>
+          <p className="text-gray-400 mt-2">Admin Panel - {t('phase')}</p>
         </div>
       </footer>
     </div>
